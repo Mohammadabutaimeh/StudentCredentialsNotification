@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Student Info Printer</title>
+<style>
+    body { font-family: Arial, sans-serif; padding: 20px; text-align: center; }
+    input { padding: 8px; width: 200px; margin-right: 10px; font-size:16px; }
+    button { padding: 8px 15px; font-size:16px; margin-top:10px; }
+    .print-container {
+        width: 700px;
+        margin: 20px auto;
+        padding: 20px;
+        border: 2px solid #333;
+        border-radius: 10px;
+        text-align: left;
+    }
+    h1 { text-align: center; margin-bottom: 10px; }
+    .section { padding: 10px; margin-bottom: 15px; }
+    .section h3 { margin-top:0; color: #0056b3; }
+    hr { border:0; height:1px; background:#aaa; margin:15px 0; }
+    .warning {
+        background: #fff3cd;
+        border: 1px solid #ffeeba;
+        padding: 20px;
+        border-radius: 8px;
+        color: #856404;
+        text-align: center;
+        font-size: 18px;
+        font-weight: bold;
+    }
+</style>
+</head>
+<body>
+
+<div style="text-align:center; margin-bottom:20px;">
+    <img src="https://ocmt.odoo.com/web/image/14023-206f05ff/ltuc_logo_en_colored.webp" alt="LTUC Logo" style="width:400px;">
+</div>
+
+<h2>Enter Student Number</h2>
+<input type="text" id="studentNumber" placeholder="Enter Student Number">
+<button onclick="showInfo()">Show</button>
+
+<div id="printArea" style="display:none; margin-top:20px;">
+    <button onclick="printContent()">Print</button>
+    <div id="content" class="print-container"></div>
+</div>
+
+<script>
+function showInfo() {
+    const studentNumber = document.getElementById('studentNumber').value.trim();
+    const container = document.getElementById('content');
+
+    if (!studentNumber) {
+        alert("Please enter a student number!");
+        return;
+    }
+
+    // must be exactly 8 digits
+    if (!/^\d{8}$/.test(studentNumber)) {
+        alert("Student number must be exactly 8 digits!");
+        return;
+    }
+
+    // OLD student number → show message instead of credentials
+    if (parseInt(studentNumber, 10) <= 25049106) {
+        container.innerHTML = `
+            <div style="text-align:center; margin-bottom:20px;">
+                <img src="https://ocmt.odoo.com/web/image/14023-206f05ff/ltuc_logo_en_colored.webp" 
+                     alt="LTUC Logo" style="width:450px;">
+            </div>
+
+            <div class="warning">
+                Application designed for new students.<br><br>
+                If the student has an old student number,<br>
+                please contact the IT Team.
+            </div>
+        `;
+        document.getElementById('printArea').style.display = "block";
+        return;
+    }
+
+    // NEW students → show credentials
+    container.innerHTML = `
+<div style="text-align:center; margin-bottom:20px;">
+    <img src="https://ocmt.odoo.com/web/image/14023-206f05ff/ltuc_logo_en_colored.webp" 
+         alt="LTUC Logo" style="width:500px;">
+</div>
+
+<h1 style="text-align:center;">Student Account & Portal Credentials</h1>
+
+<p>Dear Student,</p>
+<p>Welcome to the LTUC Family!</p>
+
+<div class="section">
+    <h3>🔐 University Email Account</h3>
+    <p>• University Email: <strong>${studentNumber}@std.ltuc.edu.jo</strong></p>
+    <p>• Password: <strong>LTuc@202520</strong></p>
+<P>⚠️ This email is your official university email and will be used for all academic communications.</P>
+</div>
+
+<hr>
+
+<div class="section">
+    <h3>🧑‍🎓 Student Portal Access</h3>
+    <p>• Portal URL: 
+        <a href="https://portal.ltuc.edu.jo/LTUC/sso.web/" target="_blank">
+            https://portal.ltuc.edu.jo/LTUC/sso.web/
+        </a>
+    </p>
+    <p>• Username: <strong>${studentNumber}</strong></p>
+    <p>• Password: <strong>123</strong></p>
+</div>
+
+<hr>
+
+<div class="section">
+    <h3>📚 Moodle</h3>
+    <p>
+        <a href="https://lms.ltuc.edu.jo/" target="_blank">
+            https://lms.ltuc.edu.jo/
+        </a>
+    </p>
+    <p>✅ Use your University Email and Password to log in to Moodle.</p>
+</div>
+
+<p>If you face any issues while logging in, please contact the IT Support team.</p> <p>We wish you a successful and productive academic journey.</p> <p><strong>Best regards,</strong><br>LTUC IT / E-Learning Team</p>
+`;
+
+    document.getElementById('printArea').style.display = "block";
+}
+
+function printContent() {
+    const content = document.getElementById('content').innerHTML;
+    const printWindow = window.open('', '', 'height=800,width=900');
+    printWindow.document.write('<html><head><title>Print</title></head><body>');
+    printWindow.document.write(content);
+    printWindow.document.write('</body></html>');
+    printWindow.document.close();
+    printWindow.print();
+}
+</script>
+
+</body>
+</html>
